@@ -14,6 +14,9 @@ version = "1.0"
 global passwordKey
 global settingsDB
 
+def tohex(val, nbits):
+    return hex((val + (1 << nbits)) % (1 << nbits))
+
 def getPasswordFile():
     global passwordKey
     fname = askopenfilename(filetypes=(("key files", "*.key"), ("All files", "*.*")))
@@ -42,7 +45,7 @@ def decode_pin():
     global settingsDB
     global passwordKey
     try:
-        salt_hex = hex(int(settingsDB)).split('x')[1]
+        salt_hex = tohex(int(settingsDB), 64).split('x')[1]
         for i in range(10000):
             password = ("{0:04}".format(i)+salt_hex)
             sha1 = hashlib.sha1(bytes(password, 'UTF-8')).hexdigest()
